@@ -1,0 +1,12 @@
+# Generated reports
+report.*
+reports/
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local assistant/tooling state
+.claude/
