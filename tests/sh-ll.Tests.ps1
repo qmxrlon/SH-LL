@@ -20,12 +20,12 @@ function Test-Case {
     try {
         & $Body
         $script:passed++
-        Write-Host "ok     $Name"
+        Write-Output "ok     $Name"
     }
     catch {
         $script:failed++
-        Write-Host "FAILED $Name"
-        Write-Host "       $($_.Exception.Message)"
+        Write-Output "FAILED $Name"
+        Write-Output "       $($_.Exception.Message)"
     }
 }
 
@@ -201,6 +201,7 @@ Test-Case 'invalid arguments exit 3' {
     Assert-Equal 3 $LASTEXITCODE 'warn above crit'
 }
 
-Write-Host ''
-Write-Host "$script:passed passed, $script:failed failed"
+Write-Output ''
+Write-Output "$script:passed passed, $script:failed failed"
 if ($script:failed -gt 0) { exit 1 }
+exit 0

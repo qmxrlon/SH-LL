@@ -24,6 +24,9 @@
     .\sh-ll.ps1 -Quiet -DiskWarn 70 -DiskCrit 85
     Prints a single monitoring status line with performance data.
 #>
+# The parameters are read by the functions below through script scope,
+# which the analyzer cannot follow.
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
 [CmdletBinding()]
 param(
     # text, json or html
@@ -195,13 +198,13 @@ function Invoke-ShllCheck {
     $perf = New-Object System.Collections.Generic.List[string]
 
     foreach ($d in $Inventory.disks) {
-        $checks.Add([ordered]@{ name = "disk $($d.mount)"; status = (Get-ShllLevel $d.used_percent $DiskWarn $DiskCrit); message = "$($d.used_percent)% used" })
+        $checks.Add([ordered]@{ name = "disk $($d.mount)"; status = (Get-ShllLevel -Value $d.used_percent -Warn $DiskWarn -Crit $DiskCrit); message = "$($d.used_percent)% used" })
         $perf.Add("'disk_$($d.mount)'=$($d.used_percent)%;$DiskWarn;$DiskCrit;0;100")
     }
 
     if ($null -ne $Inventory.memory) {
         $m = $Inventory.memory
-        $checks.Add([ordered]@{ name = 'memory'; status = (Get-ShllLevel $m.used_percent $MemWarn $MemCrit); message = "$($m.used_percent)% used ($($m.used_mb)/$($m.total_mb) MB)" })
+        $checks.Add([ordered]@{ name = 'memory'; status = (Get-ShllLevel -Value $m.used_percent -Warn $MemWarn -Crit $MemCrit); message = "$($m.used_percent)% used ($($m.used_mb)/$($m.total_mb) MB)" })
         $perf.Add("mem=$($m.used_percent)%;$MemWarn;$MemCrit;0;100")
     }
     else {
@@ -210,7 +213,7 @@ function Invoke-ShllCheck {
 
     if ($null -ne $Inventory.cpu -and $null -ne $Inventory.cpu.load_percent) {
         $c = $Inventory.cpu
-        $checks.Add([ordered]@{ name = 'cpu'; status = (Get-ShllLevel $c.load_percent $CpuWarn $CpuCrit); message = "$($c.load_percent)% load on $($c.cores) logical core(s)" })
+        $checks.Add([ordered]@{ name = 'cpu'; status = (Get-ShllLevel -Value $c.load_percent -Warn $CpuWarn -Crit $CpuCrit); message = "$($c.load_percent)% load on $($c.cores) logical core(s)" })
         $perf.Add("cpu=$($c.load_percent)%;$CpuWarn;$CpuCrit;0;100")
     }
     else {
