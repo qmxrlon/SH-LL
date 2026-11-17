@@ -189,12 +189,16 @@ if ($onWindows) {
 }
 else {
     Test-Case 'refuses to run on non-Windows with exit 3' {
+        $ErrorActionPreference = 'Continue'
         & $shell -NoLogo -NoProfile -File $target 2>$null | Out-Null
         Assert-Equal 3 $LASTEXITCODE
     }
 }
 
 Test-Case 'invalid arguments exit 3' {
+    # Windows PowerShell 5.1 turns stderr of native commands into terminating
+    # errors under 'Stop'; the error text is expected here.
+    $ErrorActionPreference = 'Continue'
     & $shell -NoLogo -NoProfile -ExecutionPolicy Bypass -File $target -Format xml 2>$null | Out-Null
     Assert-Equal 3 $LASTEXITCODE 'invalid format'
     & $shell -NoLogo -NoProfile -ExecutionPolicy Bypass -File $target -MemWarn 90 -MemCrit 80 2>$null | Out-Null
