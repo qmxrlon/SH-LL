@@ -1,0 +1,4 @@
+Filesystem     Type     1024-blocks      Used Available Capacity Mounted on
+/dev/sda1      ext4       102400000  43008000  59392000      42% /
+tmpfs          tmpfs        4096000         0   4096000       0% /run
+/dev/sdb1      xfs        204800000 174080000  30720000      85% /data
